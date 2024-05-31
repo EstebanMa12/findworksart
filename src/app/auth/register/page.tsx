@@ -35,19 +35,36 @@ function RegisterPage() {
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const { handleSubmit, control } = form;
+  const { handleSubmit, control, reset } = form;
 
-  const onSubmit = (values: registerSchema) => {
-    console.log(values);
+  const onSubmit = async (values: registerSchema) => {
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const resJSON = await res.json();
+    reset()
+    console.log(resJSON)
   };
   return (
     <section className="flex justify-center items-center h-screen ">
       <Card className="container mx-auto border-none shadow-xl rounded-lg bg-white text-black w-full max-w-md p-6">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold my-4">Register Page</CardTitle>
+          <CardTitle className="text-2xl font-bold my-4">
+            Register Page
+          </CardTitle>
           <CardDescription className="font-medium text-gray-700">
             We're glad you're here! Please register on our page.
           </CardDescription>
@@ -58,10 +75,34 @@ function RegisterPage() {
               <FormItem>
                 <FormField
                   control={control}
+                  name="name"
+                  render={({ field }) => (
+                    <>
+                      <FormLabel className="block text-sm font-medium text-gray-700">
+                        Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="string"
+                          placeholder="Enter your name"
+                          className="mt-1 block w-full p-3 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-600 mt-1 text-xs" />
+                    </>
+                  )}
+                />
+              </FormItem>
+              <FormItem>
+                <FormField
+                  control={control}
                   name="email"
                   render={({ field }) => (
                     <>
-                      <FormLabel className="block text-sm font-medium text-gray-700">Email</FormLabel>
+                      <FormLabel className="block text-sm font-medium text-gray-700">
+                        Email
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="email"
@@ -70,7 +111,7 @@ function RegisterPage() {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-red-600 mt-1" />
+                      <FormMessage className="text-red-600 mt-1 text-xs" />
                     </>
                   )}
                 />
@@ -81,7 +122,9 @@ function RegisterPage() {
                   name="password"
                   render={({ field }) => (
                     <>
-                      <FormLabel className="block text-sm font-medium text-gray-700">Password</FormLabel>
+                      <FormLabel className="block text-sm font-medium text-gray-700">
+                        Password
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="password"
@@ -90,7 +133,7 @@ function RegisterPage() {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-red-600 mt-1" />
+                      <FormMessage className="text-red-600 mt-1 text-xs" />
                     </>
                   )}
                 />
@@ -101,7 +144,9 @@ function RegisterPage() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <>
-                      <FormLabel className="block text-sm font-medium text-gray-700">Confirm Password</FormLabel>
+                      <FormLabel className="block text-sm font-medium text-gray-700">
+                        Confirm Password
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="password"
@@ -110,7 +155,7 @@ function RegisterPage() {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-red-600 mt-1" />
+                      <FormMessage className="text-red-600 mt-1 text-xs" />
                     </>
                   )}
                 />

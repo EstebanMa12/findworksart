@@ -69,7 +69,7 @@ function LoginPage() {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-red-600 mt-1"/>
+                      <FormMessage className="text-red-600 mt-1 text-xs"/>
                     </>
                   )}
                 />
@@ -89,7 +89,7 @@ function LoginPage() {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-red-600 mt-1" />
+                      <FormMessage className="text-red-600 mt-1 text-xs" />
                     </>
                   )}
                 />

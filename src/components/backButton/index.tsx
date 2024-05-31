@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 function BackButton() {
     const router = useRouter();
     return (
-        <Button onClick={() => {
+        <Button variant="outline" className="rounded" onClick={() => {
             alert("Back button clicked");
             router.back();
         }}>Back</Button>
