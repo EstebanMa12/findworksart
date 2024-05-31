@@ -1,8 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import {loginSchema} from "@/schemas/authSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { loginSchema } from "@/schemas/authSchema";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,6 +28,19 @@ import {
 } from "@/components/ui/form";
 
 function LoginPage() {
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const { handleSubmit, control } = form;
+
+  const onSubmit = (values) => {
+    console.log(values);
+  };
   return (
     <Card>
       <CardHeader>
@@ -34,40 +48,59 @@ function LoginPage() {
         <CardDescription>Enter your credentials to login</CardDescription>
       </CardHeader>
       <CardContent>
-        <Form>
-          <FormItem>
-            <FormField>
-              <FormLabel>
-                <Label>Email</Label>
-              </FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="Enter your email" />
-              </FormControl>
-            </FormField>
-          </FormItem>
-          <FormItem>
-            <FormField>
-              <FormLabel>
-                <Label>Password</Label>
-              </FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="Enter your password" />
-              </FormControl>
-            </FormField>
-          </FormItem>
-          <FormItem>
-            <FormDescription>
-              <FormMessage>Forgot your password?</FormMessage>
-            </FormDescription>
-          </FormItem>
-          <FormItem>
-            <Button type="submit">Login</Button>
-          </FormItem>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormItem>
+              <FormField
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="Enter your email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </>
+                )}
+              />
+            </FormItem>
+            <FormItem>
+              <FormField
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Enter your password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </>
+                )}
+              />
+            </FormItem>
+            <FormItem>
+              <FormDescription>
+                <a href="/forgot-password">Forgot your password?</a>
+              </FormDescription>
+            </FormItem>
+            <FormItem>
+              <Button type="submit">Login</Button>
+            </FormItem>
+          </form>
         </Form>
       </CardContent>
       <CardFooter>
         <CardDescription>
-          {" "}
           Don't have an account? <a href="/register">Register</a>
         </CardDescription>
       </CardFooter>
