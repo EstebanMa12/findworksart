@@ -8,7 +8,6 @@ interface Params {
 }
 export async function GET({ params: { id } }: Params) {
     try {
-        console.log(typeof id);
         const user = await prisma.user.findUnique({
             where: { id: Number(id) }
         });
