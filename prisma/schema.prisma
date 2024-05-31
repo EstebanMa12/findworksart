@@ -9,25 +9,29 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  name     String
-  email    String   @unique 
-  artworks Artwork[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  artworks  Artwork[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Artwork {
-  id         Int    @id @default(autoincrement())
-  title      String
-  artist     String
-  imageUrl   String
-  rijksUrl   String
-  userId     Int
-  user       User   @relation(fields: [userId], references: [id])
-  createdAt  DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  title     String
+  artist    String
+  imageUrl  String
+  rijksUrl  String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
