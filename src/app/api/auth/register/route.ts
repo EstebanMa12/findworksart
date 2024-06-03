@@ -2,19 +2,19 @@ import { NextResponse } from 'next/server';
 import db from '@/lib/prisma';
 
 
-export async function POST(request: Request){
+export async function POST(request: Request) {
     const data = await request.json()
-    const userFound = db.user.findUnique({
-        where:{
+    const userFound = await db.user.findUnique({
+        where: {
             email: data.email
         }
     })
 
-    if(userFound){
+    if (userFound) {
         return NextResponse.json({
             message: "Email already exist"
         }, {
-            status:400
+            status: 400
         })
     }
 
