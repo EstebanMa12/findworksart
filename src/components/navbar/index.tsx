@@ -27,14 +27,11 @@ export default function NavigationMenuComponent() {
                 <NavigationMenuLink asChild>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/auth/login" title="Login">
-                Re-usable components built using Radix UI and Tailwind CSS.
+              <ListItem href="/auth/login" title="Sign in">
+                If you have an
               </ListItem>
-              <ListItem href="/auth/register" title="Installation">
-                How to install dependencies and structure your app.
-              </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography">
-                Styles for headings, paragraphs, lists...etc
+              <ListItem href="/auth/register" title="Sign up">
+
               </ListItem>
             </ul>
           </NavigationMenuContent>
