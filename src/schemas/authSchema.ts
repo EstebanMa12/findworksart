@@ -26,7 +26,7 @@ export const registerSchema = z.object({
         message: "Password must be at least 6 characters",
     }),
     confirmPassword:z.string().min(6,{
-        message: "Confirm Password is required"
+        message: "Confirm Password must be the same characters as password"
     })
 
 }).superRefine(({confirmPassword,password}, ctx)=>{
