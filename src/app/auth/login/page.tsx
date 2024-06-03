@@ -45,7 +45,7 @@ function LoginPage() {
     console.log(values);
   };
   return (
-    <section className="flex justify-center items-center h-screen ">
+    <section className="flex justify-center items-center h-[calc(100hv - 1rem)] ">
       <Card className = "container mx-auto border-none shadow-xl rounded-lg bg-white text-black w-full max-w-md p-6">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold my-4">Login</CardTitle>
@@ -108,7 +108,7 @@ function LoginPage() {
         </CardContent>
         <CardFooter>
           <CardDescription>
-            Don't have an account? <a href="/register" className="hover:underline text-blue-600 font-medium">Register</a>
+            Don't have an account? <a href="/auth/register" className="hover:underline text-blue-600 font-medium">Register</a>
           </CardDescription>
         </CardFooter>
       </Card>

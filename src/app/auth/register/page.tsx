@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 import {
   Form,
@@ -27,18 +26,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import {useRouter} from "next/navigation"
+
 function RegisterPage() {
   type registerSchema = z.infer<typeof registerSchema>;
 
   const form = useForm<registerSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      name:"",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
-
+  const router = useRouter()
   const { handleSubmit, control, reset } = form;
 
   const onSubmit = async (values: registerSchema) => {
@@ -54,12 +56,15 @@ function RegisterPage() {
       },
     });
 
+    if(res.ok){
+      router.push("/auth/login")
+    }
     const resJSON = await res.json();
     reset()
-    console.log(resJSON)
+    
   };
   return (
-    <section className="flex justify-center items-center h-screen ">
+    <section className="flex justify-center items-center h-[calc(100hv - 4rem)] ">
       <Card className="container mx-auto border-none shadow-xl rounded-lg bg-white text-black w-full max-w-md p-6">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold my-4">
