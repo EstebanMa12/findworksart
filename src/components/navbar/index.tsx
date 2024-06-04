@@ -3,9 +3,9 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 async function NavigationMenuComponent() {
-  console.log(authOptions);
+  // console.log(authOptions);
   const session = await getServerSession(authOptions);
-  console.log(session);
+  // console.log(session);
 
   return (
     <nav className="flex justify-between items-center bg-gray-950 text-white px-24 py-3">
