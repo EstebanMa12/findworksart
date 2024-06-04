@@ -4,14 +4,7 @@ import { useRouter } from "next/navigation";
 import AsyncComponent from "@/components/asyncSelect";
 
 
-const searchArtworks = async () => {
-  const res = await fetch(
-    `https://www.rijksmuseum.nl/api/en/collection?key=${process.env.API_KEY}&q=${title}&involvedMaker=${artist}`,
-    { cache: "force-cache" }
-  );
-  const data = await res.json();
-  return data;
-};
+
 
   const getArtists = async () => {
     const res = await fetch(
@@ -27,7 +20,6 @@ const searchArtworks = async () => {
 
     return (
       <div>
-        
         <AsyncComponent dataArtist={dataArtist}/>
       </div>
     );
