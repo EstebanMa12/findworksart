@@ -5,6 +5,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { loginSchema } from "@/schemas/authSchema";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -15,7 +16,8 @@ import {
 } from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 import {
   Form,
@@ -28,8 +30,10 @@ import {
 } from "@/components/ui/form";
 
 function LoginPage() {
-
   type LoginSchema = z.infer<typeof loginSchema>;
+
+  const router = useRouter()
+  const [error, setError] = useState(null as String | null)
 
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -41,26 +45,45 @@ function LoginPage() {
 
   const { handleSubmit, control } = form;
 
-  const onSubmit = (values:LoginSchema) => {
-    console.log(values);
+  const onSubmit = async (values: LoginSchema) => {
+    const res = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false
+    })
+    if (res?.error){
+      setError(res.error)
+    }else{
+      router.push("/search")
+      router.refresh()
+    }
   };
   return (
-    <section className="flex justify-center items-center h-[calc(100hv - 1rem)] ">
-      <Card className = "container mx-auto border-none shadow-xl rounded-lg bg-white text-black w-full max-w-md p-6">
+    <section className="h-[calc(100% - 7rem)] flex justify-center items-center p-6 ">
+      <Card className="container mx-auto border-none shadow-xl rounded-lg bg-white text-black w-full  max-w-md p-6">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold my-4">Login</CardTitle>
-          <CardDescription className="font-medium text-gray-700">Enter your credentials to login</CardDescription>
+          <CardDescription className="font-medium text-gray-700">
+            Enter your credentials to login
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {
+                error &&(
+                  <p className="bg-red-500 text-md text-white p-3 rounded text-center">{error}</p>
+                )
+              }
               <FormItem>
                 <FormField
                   control={control}
                   name="email"
                   render={({ field }) => (
                     <>
-                      <FormLabel className="block text-sm font-medium text-gray-700">Email</FormLabel>
+                      <FormLabel className="block text-sm font-medium text-gray-700">
+                        Email
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="email"
@@ -69,7 +92,7 @@ function LoginPage() {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-red-600 mt-1 text-xs"/>
+                      <FormMessage className="text-red-600 mt-1 text-xs" />
                     </>
                   )}
                 />
@@ -95,20 +118,30 @@ function LoginPage() {
                 />
               </FormItem>
               <FormItem>
-                <FormDescription className= "mt-4 text-end hover:underline font-medium hover:text-blue-600">
+                <FormDescription className="mt-4 text-end hover:underline font-medium hover:text-blue-600">
                   <a href="/forgot-password">Forgot your password?</a>
                 </FormDescription>
               </FormItem>
               <FormItem>
-                <Button  type="submit" 
-                className="w-full py-3 mt-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Login</Button>
+                <Button
+                  type="submit"
+                  className="w-full py-3 mt-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Login
+                </Button>
               </FormItem>
             </form>
           </Form>
         </CardContent>
         <CardFooter>
           <CardDescription>
-            Don't have an account? <a href="/auth/register" className="hover:underline text-blue-600 font-medium">Register</a>
+            Don't have an account?{" "}
+            <a
+              href="/auth/register"
+              className="hover:underline text-blue-600 font-medium"
+            >
+              Register
+            </a>
           </CardDescription>
         </CardFooter>
       </Card>

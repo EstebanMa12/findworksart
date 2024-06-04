@@ -1,75 +1,44 @@
-"use client"
+import Link from "next/link";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-import * as React from "react"
-import Link from "next/link"
+async function NavigationMenuComponent() {
+  console.log(authOptions);
+  const session = await getServerSession(authOptions);
+  console.log(session);
 
-import { cn } from "@/lib/utils"
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
-
-
-export default function NavigationMenuComponent() {
   return (
-    <NavigationMenu className="border">
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Authentication</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-              <li className="">
-                <NavigationMenuLink asChild>
-                </NavigationMenuLink>
-              </li>
-              <ListItem href="/auth/login" title="Sign in">
-                If you have an
-              </ListItem>
-              <ListItem href="/auth/register" title="Sign up">
+    <nav className="flex justify-between items-center bg-gray-950 text-white px-24 py-3">
+      <Link href="/">
+        <h1 className="text-xl font-bold">FindWorksArt</h1>
+      </Link>
 
-              </ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Documentation
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
-  )
+      <ul className="flex gap-x-4">
+        {!session?.user ? (
+          <>
+            <li>
+              <Link href="/">Home</Link>
+            </li>
+            <li>
+              <Link href="/auth/login">Login</Link>
+            </li>
+            <li>
+              <Link href="/auth/register">Register</Link>
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              <Link href="/search">Search</Link>
+            </li>
+            <li>
+              <Link href="/api/auth/signout">Logout</Link>
+            </li>
+          </>
+        )}
+      </ul>
+    </nav>
+  );
 }
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  )
-})
-ListItem.displayName = "ListItem"
+export default NavigationMenuComponent;
