@@ -28,6 +28,8 @@ import {
 
 import {useRouter} from "next/navigation"
 
+import Link from "next/link"
+
 function RegisterPage() {
   type registerSchema = z.infer<typeof registerSchema>;
 
@@ -64,10 +66,10 @@ function RegisterPage() {
     
   };
   return (
-    <section className="flex justify-center items-center h-[calc(100hv - 4rem)] ">
+    <section className="flex justify-center items-center h-[calc(100vh-3rem)] ">
       <Card className="container mx-auto border-none shadow-xl rounded-lg bg-white text-black w-full max-w-md p-6">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold my-4">
+          <CardTitle className="text-2xl font-bold my-2">
             Register Page
           </CardTitle>
           <CardDescription className="font-medium text-gray-700">
@@ -179,16 +181,16 @@ function RegisterPage() {
         <CardFooter className="text-center mt-4">
           <CardDescription className="text-gray-600 text-sm">
             By registering, you agree to our{" "}
-            <a href="/privacy-policy" className="text-blue-600 hover:underline">
+            <Link href="/privacy-policy" className="text-blue-600 hover:underline">
               Privacy Policy
-            </a>{" "}
+            </Link>{" "}
             and{" "}
-            <a
+            <Link
               href="/terms-of-service"
               className="text-blue-600 hover:underline"
             >
               Terms of Service
-            </a>
+            </Link>
             . Your information is safe with us.
           </CardDescription>
         </CardFooter>

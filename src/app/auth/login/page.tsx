@@ -29,6 +29,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import Link from "next/link"
 function LoginPage() {
   type LoginSchema = z.infer<typeof loginSchema>;
 
@@ -59,7 +60,7 @@ function LoginPage() {
     }
   };
   return (
-    <section className="h-[calc(100% - 7rem)] flex justify-center items-center p-6 ">
+    <section className="h-[calc(100vh-2rem)] flex justify-center items-center p-6 ">
       <Card className="container mx-auto border-none shadow-xl rounded-lg bg-white text-black w-full  max-w-md p-6">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold my-4">Login</CardTitle>
@@ -119,7 +120,7 @@ function LoginPage() {
               </FormItem>
               <FormItem>
                 <FormDescription className="mt-4 text-end hover:underline font-medium hover:text-blue-600">
-                  <a href="/forgot-password">Forgot your password?</a>
+                  <Link href="/forgot-password">Forgot your password?</Link>
                 </FormDescription>
               </FormItem>
               <FormItem>
@@ -136,12 +137,12 @@ function LoginPage() {
         <CardFooter>
           <CardDescription>
             Don't have an account?{" "}
-            <a
+            <Link
               href="/auth/register"
               className="hover:underline text-blue-600 font-medium"
             >
               Register
-            </a>
+            </Link>
           </CardDescription>
         </CardFooter>
       </Card>

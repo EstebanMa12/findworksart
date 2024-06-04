@@ -26,13 +26,8 @@ const searchArtworks = async () => {
     const dataArtist = await getArtists();
 
     return (
-      <div className="container h-screen flex flex-row border justify-center items-center gap-x-4">
-        <h1>Search Page</h1>
-        <input 
-        type="text" 
-        placeholder="Search by title" 
-        className="border p-2"
-      />
+      <div>
+        
         <AsyncComponent dataArtist={dataArtist}/>
       </div>
     );
