@@ -1,9 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState, useEffect } from "react";
 import AsyncSelect from "react-select/async";
-import { Session } from "next-auth";
-import { getSession } from "next-auth/react";
-
+import { motion, AnimatePresence } from "framer-motion";
+import {Image} from "next/image"
 import {
   Card,
   CardContent,
@@ -30,19 +30,8 @@ interface ArtistOption {
 
 const AsyncComponent: React.FC<AsyncComponentProps> = ({ dataArtist }) => {
   const [selectedOption, setSelectedOption] = useState<any | null>(null);
-  const [sessionOauth, setSessionOauth] = useState<Session | null>(null);
 
   const [artists, setArtists] = useState([]);
-  useEffect(() => {
-    (async () => {
-      try {
-        const session: Session | null = await getSession();
-        setSessionOauth(session);
-      } catch (error: any) {
-        alert(error.message);
-      }
-    })();
-  }, []);
 
   const options = dataArtist.map((artist) => ({
     label: artist.name,
@@ -86,15 +75,26 @@ const AsyncComponent: React.FC<AsyncComponentProps> = ({ dataArtist }) => {
       alert(error.message);
     }
   };
+
   return (
-    <section className="flex flex-col w-full  border gap-y-4 justify-center h-[calc(100vh-4rem)] items-center">
+    <section className="flex flex-col w-full py-2  gap-y-4 justify-center h-[calc(100vh-5rem)] items-center">
       <Card className="rounded w-2/3 sm:w-1/2 shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-center">Search Page</CardTitle>
-        </CardHeader>
+        <AnimatePresence>
+          {artists.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <CardHeader>
+                <CardTitle className="text-center">Search Page</CardTitle>
+              </CardHeader>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <CardContent>
           <form
-            className="flex flex-row justify-between items-center"
+            className="flex flex-row justify-between items-center mt-4"
             onSubmit={handleSubmit}
           >
             <input
@@ -120,6 +120,36 @@ const AsyncComponent: React.FC<AsyncComponentProps> = ({ dataArtist }) => {
           </form>
         </CardContent>
       </Card>
+      <AnimatePresence>
+        {artists.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-wrap gap-2 w-full overflow-y-auto"
+          >
+            {artists.map((artist: any) => (
+              <motion.figure
+                key={artist.id}
+                className="relative group overflow-hidden"
+                style={{ width: `${artist.headerImage.width}px`, height: `${artist.headerImage.height}px` }}
+              >
+                <img
+                  src={artist.headerImage.url}
+                  alt={artist.title}
+                  className="w-full h-full object-cover group-hover:opacity-75 transition-opacity duration-300"
+                />
+                <figcaption className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-white p-4">
+                  <h3 className="text-lg font-bold">{artist.title}</h3>
+                  <p className="text-sm">{artist.longTitle}</p>
+                  <p className="text-xs mt-2">{artist.principalOrFirstMaker}</p>
+                </figcaption>
+              </motion.figure>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
