@@ -18,6 +18,10 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)'],
+        slab: ['var(--font-roboto-slab)'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

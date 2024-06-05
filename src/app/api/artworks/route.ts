@@ -44,29 +44,3 @@ export async function POST(request:Request) {
     
 }
 
-export async function GET(request:Request) {
-    try {
-        const data = await request.json();
-        const artFound = await db.artwork.findMany({
-            where:{
-                userId: data.userId
-            }
-        })
-
-        return NextResponse.json({
-            data: artFound,
-            message: "Artworks retrieved successfully",
-        }, {
-            status: 200
-        })
-
-    } catch (error:any) {
-        return NextResponse.json({
-            message: error.message
-        }, {
-            status: 500
-        })
-        
-    }
-    
-}
