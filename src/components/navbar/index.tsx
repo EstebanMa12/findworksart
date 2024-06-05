@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 async function NavigationMenuComponent() {
   const sessionOauth = await getServerSession();
-  console.log(sessionOauth);
+  
 
   return (
     <nav className="flex justify-between items-center bg-indigo-400 text-white px-8 py-4 shadow-md">

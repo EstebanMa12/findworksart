@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
-
+import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
+import { Session } from "next-auth";
 
 import {
   ContextMenu,
@@ -12,12 +13,45 @@ import {
 
 import { motion } from "framer-motion";
 
-
 const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
+  const [session, setSession] = useState<Session | null>(null);
 
-  const handleFavorite = () => {
-    console.log('marcar como favorita')
-  }
+  const getSessionOauth = async () => {
+    const sessionOauth = await getSession();
+    setSession(sessionOauth);
+  };
+
+  useEffect(() => {
+    getSessionOauth();
+  }, []);
+
+  const handleFavorite = async (artist: any) => {
+    try {
+      if (session) {
+        const res = await fetch(`api/users/${session?.user?.email}`);
+        const data = await res.json();
+        const userId = data.id;
+
+        const favoriteResponse = await fetch("api/artworks", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: artist.title,
+            artist: artist.principalOrFirstMaker,
+            userId: userId,
+            rijksUrl: artist.links.web,
+            imageUrl: artist.headerImage.url,
+          }),
+        });
+        console.log(favoriteResponse)
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -59,15 +93,15 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
             <ContextMenuContent className="flex h-[80px] w-[100px] items-center justify-center rounded bg-opacity-50 border-none bg-black text-sm text-white">
               <ContextMenuItem
                 className="
-                      text-white
-                        hover:bg-white
-                        hover:text-black
-                        rounded
-                        p-2
-                        m-1
-                        cursor-pointer
-                        "
-                        onClick={handleFavorite}
+                        text-white
+                          hover:bg-white
+                          hover:text-black
+                          rounded
+                          p-2
+                          m-1
+                          cursor-pointer
+                          "
+                onClick={handleFavorite(artist)}
               >
                 Marcar como favorita
               </ContextMenuItem>
@@ -77,6 +111,6 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
       ))}
     </motion.div>
   );
-}
+};
 
 export default ArtWorksComponent;

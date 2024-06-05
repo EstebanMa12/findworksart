@@ -8,7 +8,9 @@ export async function POST(request:Request) {
             where:{
                 title: data.title,
                 artist: data.artist,
-                userId: data.userEmail
+                userId: data.userId,
+                rijksUrl: data.rijksUrl,
+                imageUrl: data.imageUrl
             }
         })
 
