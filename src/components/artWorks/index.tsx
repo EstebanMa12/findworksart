@@ -45,10 +45,14 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
             imageUrl: artist.headerImage.url,
           }),
         });
-        console.log(favoriteResponse)
+        if (!favoriteResponse.ok) {
+          alert("Error al marcar como favorita");
+        }
+
+        alert("Artwork successfully added as Favorite");
       }
     } catch (error: any) {
-      console.error(error.message);
+      alert(error.message);
     }
   };
 
@@ -101,7 +105,7 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
                           m-1
                           cursor-pointer
                           "
-                onClick={handleFavorite(artist)}
+                onClick={()=>handleFavorite(artist)}
               >
                 Marcar como favorita
               </ContextMenuItem>
