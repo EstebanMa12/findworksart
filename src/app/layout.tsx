@@ -18,8 +18,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-          <NavigationMenuComponent />
-          {children}
+        <NavigationMenuComponent />
+        {children}
       </body>
     </html>
   );

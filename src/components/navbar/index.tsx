@@ -1,20 +1,35 @@
+"use client"
 import Link from "next/link";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getSession } from "next-auth/react";
+import React, { useState, useEffect } from "react";
+import { Session } from "next-auth";
+import { getServerSession } from 'next-auth';
 
-async function NavigationMenuComponent() {
-  console.log(authOptions);
-  const session = await getServerSession(authOptions);
-  console.log(session);
 
-  return (
+
+function NavigationMenuComponent() {
+  const [sessionOauth, setSessionOauth] = useState<Session | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const session: Session | null = await getSession();
+        setSessionOauth(session);
+      } catch (error: any) {
+        alert(error.message);
+      }
+    })();
+  }, []);
+
+
+  return (  
     <nav className="flex justify-between items-center bg-gray-950 text-white px-24 py-3">
       <Link href="/">
         <h1 className="text-xl font-bold">FindWorksArt</h1>
       </Link>
 
       <ul className="flex gap-x-4">
-        {!session?.user ? (
+        {!sessionOauth?.user ? (
           <>
             <li>
               <Link href="/">Home</Link>
@@ -40,5 +55,7 @@ async function NavigationMenuComponent() {
     </nav>
   );
 }
+
+
 
 export default NavigationMenuComponent;

@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import AsyncSelect from "react-select/async";
-import { useSession, getSession } from "next-auth/react";
+import { Session } from "next-auth";
+import { getSession } from "next-auth/react";
 
 import {
   Card,
@@ -28,14 +29,21 @@ interface ArtistOption {
 }
 
 const AsyncComponent: React.FC<AsyncComponentProps> = ({ dataArtist }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [sessionOauth, setSessionOauth] = useState(null);
+  const [selectedOption, setSelectedOption] = useState<any | null>(null);
+  const [sessionOauth, setSessionOauth] = useState<Session | null>(null);
+
+  const [artists, setArtists] = useState([]);
   useEffect(() => {
     (async () => {
-      const session = await getSession();
-      console.log(session);
+      try {
+        const session: Session | null = await getSession();
+        setSessionOauth(session);
+      } catch (error: any) {
+        alert(error.message);
+      }
     })();
   }, []);
+
   const options = dataArtist.map((artist) => ({
     label: artist.name,
     value: artist.id,
@@ -47,14 +55,6 @@ const AsyncComponent: React.FC<AsyncComponentProps> = ({ dataArtist }) => {
     );
   };
 
-  // const searchArtworks = async () => {
-  //   const res = await fetch(
-  //     `https://www.rijksmuseum.nl/api/en/collection?key=${process.env.API_KEY}&q=${title}&involvedMaker=${artist}`,
-  //     { cache: "force-cache" }
-  //   );
-  //   const data = await res.json();
-  //   return data;
-  // };
   const promiseOptions = (inputValue: string) =>
     new Promise<ArtistOption[]>((resolve) => {
       setTimeout(() => {
@@ -63,23 +63,28 @@ const AsyncComponent: React.FC<AsyncComponentProps> = ({ dataArtist }) => {
     });
 
   const handleSubmit = async (event: any) => {
-    event.preventDefault();
-    const searchTitle = event.target.elements[0].value;
-    const searchArtist = selectedOption;
+    try {
+      event.preventDefault();
+      const searchTitle = await event.target.elements[0].value;
+      const searchArtist = selectedOption?.value || null;
 
-    let url = "https://www.rijksmuseum.nl/api/en/collection?key=KHn4xrLx";
+      let url =
+        "https://www.rijksmuseum.nl/api/nl/collection?key=KHn4xrLx&format=json";
 
-    if (searchTitle) {
-      url += `&q=${searchTitle}`;
+      if (searchTitle) {
+        url += `&q=${searchTitle}`;
+      }
+
+      if (searchArtist) {
+        url += `&artist=${searchArtist}`;
+      }
+
+      const res = await fetch(url);
+      const data = await res.json();
+      setArtists(data.artObjects);
+    } catch (error: any) {
+      alert(error.message);
     }
-
-    if (searchArtist) {
-      url += `&involvedMaker=${searchArtist}`;
-    }
-
-    const res = await fetch(url);
-    const data = await res.json();
-    console.log(data);
   };
   return (
     <section className="flex flex-col w-full  border gap-y-4 justify-center h-[calc(100vh-4rem)] items-center">
