@@ -15,6 +15,7 @@ function NavigationMenuComponent() {
       try {
         const session: Session | null = await getSession();
         setSessionOauth(session);
+        console.log(session)
       } catch (error: any) {
         alert(error.message);
       }
