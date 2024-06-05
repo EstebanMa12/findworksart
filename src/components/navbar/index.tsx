@@ -15,40 +15,48 @@ function NavigationMenuComponent() {
       try {
         const session: Session | null = await getSession();
         setSessionOauth(session);
-        console.log(session)
       } catch (error: any) {
         alert(error.message);
       }
     })();
   }, []);
 
-
   return (  
-    <nav className="flex justify-between items-center bg-gray-950 text-white px-24 py-3">
+    <nav className="flex justify-between items-center bg-blue-600 text-white px-8 py-4 shadow-md">
       <Link href="/">
-        <h1 className="text-xl font-bold">FindWorksArt</h1>
+        <h1 className="text-2xl font-bold">FindWorksArt</h1>
       </Link>
 
       <ul className="flex gap-x-4">
         {!sessionOauth?.user ? (
           <>
             <li>
-              <Link href="/">Home</Link>
+              <Link href="/">
+                <p className="hover:text-blue-300">Home</p>
+              </Link>
             </li>
             <li>
-              <Link href="/auth/login">Login</Link>
+              <Link href="/auth/login">
+                <p className="hover:text-blue-300">Login</p>
+              </Link>
             </li>
             <li>
-              <Link href="/auth/register">Register</Link>
+              <Link href="/auth/register">
+                <p className="hover:text-blue-300">Register</p>
+              </Link>
             </li>
           </>
         ) : (
           <>
             <li>
-              <Link href="/search">Search</Link>
+              <Link href="/search">
+                <p className="hover:text-blue-300">Search</p>
+              </Link>
             </li>
             <li>
-              <Link href="/api/auth/signout">Logout</Link>
+              <Link href="/api/auth/signout">
+                <p className="hover:text-blue-300">Logout</p>
+              </Link>
             </li>
           </>
         )}
@@ -56,7 +64,5 @@ function NavigationMenuComponent() {
     </nav>
   );
 }
-
-
 
 export default NavigationMenuComponent;
