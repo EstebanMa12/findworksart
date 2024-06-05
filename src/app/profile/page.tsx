@@ -4,24 +4,24 @@ import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function profilePage() {
     const [session, setSession] = useState<Session | null>(null);
     const [artWorks, setArtWorks] = useState<any[]>([]);
 
     const getSessionOauth = async () => {
-    const sessionOauth = await getSession();
-    if (sessionOauth) {
-        setSession(sessionOauth);
-        const res = await fetch(`api/users/${sessionOauth?.user?.email}`);
-        const data = await res.json();
-        const userId = data.id;
-        const resArtWorks = await fetch(`api/artworks/${userId}`);
-        const dataArtWorks = await resArtWorks.json();
-        setArtWorks(dataArtWorks.data);
-        console.log(dataArtWorks)
-    }
+        const sessionOauth = await getSession();
+        if (sessionOauth) {
+            setSession(sessionOauth);
+            const res = await fetch(`api/users/${sessionOauth?.user?.email}`);
+            const data = await res.json();
+            const userId = data.id;
+            const resArtWorks = await fetch(`api/artworks/${userId}`);
+            const dataArtWorks = await resArtWorks.json();
+            setArtWorks(dataArtWorks.data);
+            console.log(dataArtWorks)
+        }
     };
   
     useEffect(() => {

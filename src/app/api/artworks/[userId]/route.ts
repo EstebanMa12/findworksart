@@ -10,7 +10,7 @@ export async function GET(request:Request, { params: { userId } }: Params) {
     try {
         const artFound = await db.artwork.findMany({
             where:{
-                userId: userId
+                userId: parseInt(userId, 10)
             }
         })
 
