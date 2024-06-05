@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 async function NavigationMenuComponent() {
   const sessionOauth = await getServerSession();
+  console.log(sessionOauth);
 
   return (
     <nav className="flex justify-between items-center bg-indigo-400 text-white px-8 py-4 shadow-md">
@@ -36,6 +37,13 @@ async function NavigationMenuComponent() {
               <Link href="/search">
                 <p className="hover:text-blue-300 transition-colors duration-300">
                   Search
+                </p>
+              </Link>
+            </li>
+            <li>
+              <Link href="/profile">
+                <p className="hover:text-blue-300 transition-colors duration-300">
+                  My Profile
                 </p>
               </Link>
             </li>
