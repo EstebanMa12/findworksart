@@ -1,17 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import AsyncSelect from "react-select/async";
 import { motion, AnimatePresence } from "framer-motion";
-import {Image} from "next/image"
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+import ArtWorksComponent from "@/components/artWorks";
 
 import { Button } from "@/components/ui/button";
 
@@ -121,34 +120,7 @@ const AsyncComponent: React.FC<AsyncComponentProps> = ({ dataArtist }) => {
         </CardContent>
       </Card>
       <AnimatePresence>
-        {artists.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-wrap gap-2 w-full overflow-y-auto"
-          >
-            {artists.map((artist: any) => (
-              <motion.figure
-                key={artist.id}
-                className="relative group overflow-hidden"
-                style={{ width: `${artist.headerImage.width}px`, height: `${artist.headerImage.height}px` }}
-              >
-                <img
-                  src={artist.headerImage.url}
-                  alt={artist.title}
-                  className="w-full h-full object-cover group-hover:opacity-75 transition-opacity duration-300"
-                />
-                <figcaption className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-white p-4">
-                  <h3 className="text-lg font-bold">{artist.title}</h3>
-                  <p className="text-sm">{artist.longTitle}</p>
-                  <p className="text-xs mt-2">{artist.principalOrFirstMaker}</p>
-                </figcaption>
-              </motion.figure>
-            ))}
-          </motion.div>
-        )}
+        {artists.length > 0 && <ArtWorksComponent artists={artists} />}
       </AnimatePresence>
     </section>
   );
