@@ -1,4 +1,4 @@
-"use client"
+
 import Link from "next/link";
 import { getSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
@@ -7,19 +7,11 @@ import { getServerSession } from 'next-auth';
 
 
 
-function NavigationMenuComponent() {
-  const [sessionOauth, setSessionOauth] = useState<Session | null>(null);
+async function NavigationMenuComponent() {
+  
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const session: Session | null = await getSession();
-        setSessionOauth(session);
-      } catch (error: any) {
-        alert(error.message);
-      }
-    })();
-  }, []);
+  const sessionOauth = await getServerSession();
+
 
   return (  
     <nav className="flex justify-between items-center bg-blue-600 text-white px-8 py-4 shadow-md">
