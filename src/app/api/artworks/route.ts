@@ -8,7 +8,7 @@ export async function POST(request:Request) {
             where:{
                 title: data.title,
                 artist: data.artist,
-                userId: data.userId
+                userId: data.userEmail
             }
         })
 

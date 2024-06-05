@@ -3,13 +3,13 @@ import { NextResponse } from "next/server";
 
 interface Params {
     params: {
-        id: string;
+        email: string;
     }
 }
-export async function GET(request: Request, { params: { id } }: Params) {
+export async function GET(request: Request, { params: { email } }: Params) {
     try {
         const user = await prisma.user.findUnique({
-            where: { id: Number(id) }
+            where: { email: email }
         });
         return NextResponse.json(user);
     } catch (error: any) {

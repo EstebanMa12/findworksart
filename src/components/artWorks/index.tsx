@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
 
+import { getSession } from "next-auth/react";
+
 import {
   ContextMenu,
   ContextMenuContent,
@@ -11,7 +13,11 @@ import {
 import { motion } from "framer-motion";
 
 
-const ArtWorksComponent: React.FC= ({ artists }) =>{
+const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
+
+  const handleFavorite = () => {
+    console.log('marcar como favorita')
+  }
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -32,7 +38,7 @@ const ArtWorksComponent: React.FC= ({ artists }) =>{
           <img
             src={artist.headerImage.url}
             alt={artist.title}
-            className="w-full h-full object-cover group-hover:opacity-75 transition-opacity duration-300"
+            className="w-full h-full  group-hover:opacity-75 transition-opacity duration-300"
           />
           <ContextMenu>
             <ContextMenuTrigger>
@@ -50,7 +56,7 @@ const ArtWorksComponent: React.FC= ({ artists }) =>{
                 </a>
               </figcaption>
             </ContextMenuTrigger>
-            <ContextMenuContent className="flex h-[100px] w-[200px] items-center justify-center rounded bg-opacity-50 border-none bg-black text-sm text-white">
+            <ContextMenuContent className="flex h-[80px] w-[100px] items-center justify-center rounded bg-opacity-50 border-none bg-black text-sm text-white">
               <ContextMenuItem
                 className="
                       text-white
@@ -61,6 +67,7 @@ const ArtWorksComponent: React.FC= ({ artists }) =>{
                         m-1
                         cursor-pointer
                         "
+                        onClick={handleFavorite}
               >
                 Marcar como favorita
               </ContextMenuItem>
