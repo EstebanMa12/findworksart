@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/form";
 
 import Link from "next/link"
+import Swal from "sweetalert2";
 function LoginPage() {
   type LoginSchema = z.infer<typeof loginSchema>;
 
@@ -47,16 +48,34 @@ function LoginPage() {
   const { handleSubmit, control } = form;
 
   const onSubmit = async (values: LoginSchema) => {
-    const res = await signIn("credentials", {
-      email: values.email,
-      password: values.password,
-      redirect: false
-    })
-    if (res?.error){
-      setError(res.error)
-    }else{
-      router.push("/search")
-      router.refresh()
+    try {
+      const res = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false
+      })
+      if (res?.error){
+        setError(res.error)
+      }else{
+        router.push("/")
+        Swal.fire({
+          title: "Success",
+          text: "Login successful",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        router.refresh()
+      }
+    } catch (error:any) {
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        icon: "error",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      
     }
   };
   return (

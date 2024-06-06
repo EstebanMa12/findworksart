@@ -30,6 +30,8 @@ import {useRouter} from "next/navigation"
 
 import Link from "next/link"
 
+import Swal from "sweetalert2";
+
 function RegisterPage() {
   type registerSchema = z.infer<typeof registerSchema>;
 
@@ -46,23 +48,43 @@ function RegisterPage() {
   const { handleSubmit, control, reset } = form;
 
   const onSubmit = async (values: registerSchema) => {
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      body: JSON.stringify({
-        name: values.name,
-        email: values.email,
-        password: values.password,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if(res.ok){
-      router.push("/auth/login")
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if(res.ok){
+        Swal.fire({
+          title: "Success",
+          text: "You have been registered successfully",
+          icon: "success",
+          timer: 1500,
+        });
+        router.push("/auth/login")
+      reset()
+      }else{
+        Swal.fire({
+          title: "Error",
+          text: "Email already exists",
+          icon: "error",
+        });
+      }
+    } catch (error:any) {
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        icon: "error",
+      });
+      
     }
-    const resJSON = await res.json();
-    reset()
     
   };
   return (
