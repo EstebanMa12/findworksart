@@ -3,7 +3,7 @@ import db from '@/lib/prisma';
 
 interface Params {
     params: {
-        userId: number;
+        userId: string;
     }
 }
 export async function GET(request:Request, { params: { userId } }: Params) {
