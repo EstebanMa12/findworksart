@@ -129,7 +129,7 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
                           "
                 onClick={() => handleFavorite(artist)}
               >
-                Marcar como favorita
+                Add to Favorite
               </ContextMenuItem>
             </ContextMenuContent>
           </ContextMenu>
