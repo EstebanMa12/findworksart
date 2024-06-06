@@ -41,7 +41,13 @@ export default function profilePage() {
         setArtWorks(dataArtWorks.data);
       }
     } catch (error: any) {
-      alert(error.message);
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+      });
     }
   };
 
@@ -115,19 +121,19 @@ export default function profilePage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.5 }}
-            className="grid grid-cols-1 grid-rows-3 lg:grid-cols-2 w-full h-full overflow-y-auto p-6 gap-6"
+            className="grid grid-cols-1 grid-flow-row lg:grid-cols-2 w-full h-full overflow-y-auto p-6 gap-6"
           >
             {artWorks.map((artist: any) => (
               <motion.figure
                 key={artist.id}
-                className="relative group overflow-hidden flex items-center bg-slate-200  rounded shadow-md"
+                className="relative group overflow-hidden flex items-center bg-slate-200 min-h-48  rounded shadow-md"
               >
                 <img
                   src={artist.imageUrl}
                   alt={artist.title}
                   className="object-cover group-hover:opacity-75 transition-opacity duration-300"
                 />
-                <figcaption className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-white p-4">
+                <figcaption className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center overflow-y-auto items-center text-white p-4">
                   <div className="flex justify-end w-full">
                     <DropdownMenu
                       open={openMenuId === artist.id}

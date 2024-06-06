@@ -85,21 +85,20 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.5 }}
-      className="flex flex-wrap gap-2 overflow-y-auto"
+      className="flex flex-wrap gap-2 overflow-y-auto px-6"
     >
       {artists.map((artist: any) => (
         <motion.figure
           key={artist.id}
-          className="relative group overflow-hidden"
+          className="relative group overflow-hidden flex items-center min-h-48  rounded shadow-md "
           style={{
-            width: `${artist.headerImage.width}px`,
             height: `${artist.headerImage.height}px`,
           }}
         >
           <img
             src={artist.headerImage.url}
             alt={artist.title}
-            className="w-full h-full  group-hover:opacity-75 transition-opacity duration-300"
+            className="group-hover:opacity-75 transition-opacity duration-300"
           />
           <ContextMenu>
             <ContextMenuTrigger>

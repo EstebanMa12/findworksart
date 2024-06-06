@@ -14,6 +14,8 @@ import ArtWorksComponent from "@/components/artWorks";
 import { Button } from "@/components/ui/button";
 import { Suspense } from 'react'
 
+import Swal from "sweetalert2";
+
 interface Artist {
   id: string;
   name: string;
@@ -64,14 +66,29 @@ const AsyncComponent: React.FC<AsyncComponentProps> = ({ dataArtist }) => {
       }
 
       if (searchArtist) {
-        url += `&artist=${searchArtist}`;
+        url += `&involvedMaker=${searchArtist}`;
       }
 
       const res = await fetch(url);
       const data = await res.json();
+      if (data.count === 0) {
+        Swal.fire({
+          title: "Error",
+          text: "No data found, please try again with another search",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
       setArtists(data.artObjects);
     } catch (error: any) {
-      alert(error.message);
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+      });
     }
   };
 
