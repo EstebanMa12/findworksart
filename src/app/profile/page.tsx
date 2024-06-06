@@ -72,7 +72,7 @@ export default function profilePage() {
           });
           const data = await res.json();
           if (data.message === "Artworks deleted successfully") {
-            router.refresh();
+            setArtWorks(artWorks?.filter(artwork => artwork.id !== id)|| null);
             Swal.fire({
               position: "top-end",
               title: "Deleted!",
@@ -114,7 +114,7 @@ export default function profilePage() {
         </h1>
         <p className="text-sm italic mt-2">Email: {user?.email ?? ""}</p>
       </div>
-      {artWorks && artWorks.length > 0 && (
+      {artWorks !== null && artWorks.length > 0 && (
         <Suspense fallback={<p>Loading your favorites</p>}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}

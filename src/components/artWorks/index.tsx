@@ -62,7 +62,6 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
           });
         }else{
           Swal.fire({
-            position: "top-end",
             icon: "success",
             title: "Artwork successfully added as Favorite",
             showConfirmButton: false,
