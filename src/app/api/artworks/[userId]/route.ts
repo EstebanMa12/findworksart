@@ -31,3 +31,28 @@ export async function GET(request:Request, { params: { userId } }: Params) {
     }
     
 }
+
+export async function DELETE(request:Request, { params: { userId } }: Params) {
+    try {
+        const artDeleted = await db.artwork.delete({
+            where:{
+                id: parseInt(userId, 10)
+            }
+        })
+        return NextResponse.json({
+            data: artDeleted,
+            message: "Artworks deleted successfully",
+        }, {
+            status: 200
+        })
+
+    } catch (error:any) {
+        return NextResponse.json({
+            message: error.message
+        }, {
+            status: 500
+        })
+        
+    }
+    
+}

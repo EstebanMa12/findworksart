@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
 
+import Swal from "sweetalert2";
+
 import {
   ContextMenu,
   ContextMenuContent,
@@ -17,8 +19,16 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
   const [session, setSession] = useState<Session | null>(null);
 
   const getSessionOauth = async () => {
-    const sessionOauth = await getSession();
-    setSession(sessionOauth);
+    try {
+      const sessionOauth = await getSession();
+      setSession(sessionOauth);
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        icon: "error",
+      });
+    }
   };
 
   useEffect(() => {
@@ -31,7 +41,6 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
         const res = await fetch(`api/users/${session?.user?.email}`);
         const data = await res.json();
         const userId = data.id;
-
         const favoriteResponse = await fetch("api/artworks", {
           method: "POST",
           headers: {
@@ -46,13 +55,27 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
           }),
         });
         if (!favoriteResponse.ok) {
-          alert("Error al marcar como favorita");
+          Swal.fire({
+            title: "Error",
+            text: "Artwork already exist in your collection",
+            icon: "error",
+          });
+        }else{
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Artwork successfully added as Favorite",
+            showConfirmButton: false,
+            timer: 1500
+          });
         }
-
-        alert("Artwork successfully added as Favorite");
       }
     } catch (error: any) {
-      alert(error.message);
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        icon: "error",
+      });
     }
   };
 
@@ -105,7 +128,7 @@ const ArtWorksComponent: React.FC<{ artists: any[] }> = ({ artists }) => {
                           m-1
                           cursor-pointer
                           "
-                onClick={()=>handleFavorite(artist)}
+                onClick={() => handleFavorite(artist)}
               >
                 Marcar como favorita
               </ContextMenuItem>

@@ -1,16 +1,32 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
+import { MoreHorizontal, Trash } from "lucide-react";
+import Swal from "sweetalert2";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function profilePage() {
   const [session, setSession] = useState<Session | null>(null);
-  const [artWorks, setArtWorks] = useState<any[]>([]);
+  const [artWorks, setArtWorks] = useState<any[] | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const router = useRouter();
 
   const getSessionOauth = async () => {
     try {
@@ -33,7 +49,49 @@ export default function profilePage() {
     getSessionOauth();
   }, []);
 
+  const handleDelete = async (id: string) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const res = await fetch(`api/artworks/${id}`, {
+            method: "DELETE",
+          });
+          const data = await res.json();
+          if (data.message === "Artworks deleted successfully") {
+            router.refresh();
+            Swal.fire({
+              position: "top-end",
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        }
+      });
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: `${error.message}`,
+      });
+    }
+  };
+
   const user = session?.user || null;
+
+  const handleMenuToggle = (id: string) => {
+    setOpenMenuId((prevId) => (prevId === id ? null : id));
+  };
   return (
     <div className="w-full h-[calc(100vh-5rem)] flex items-center">
       <div className="h-full border-2 w-1/4  flex flex-col p-6 items-center">
@@ -51,39 +109,85 @@ export default function profilePage() {
         <p className="text-sm italic mt-2">Email: {user?.email ?? ""}</p>
       </div>
       {artWorks && artWorks.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.5 }}
-          className="grid grid-cols-1 grid-rows-3 lg:grid-cols-2 w-full h-full overflow-y-auto p-6 gap-6"
-        >
-          {artWorks.map((artist: any) => (
-            <motion.figure
-              key={artist.id}
-              className="relative group overflow-hidden flex items-center bg-slate-200  rounded shadow-md"
-            >
-              <img
-                src={artist.imageUrl}
-                alt={artist.title}
-                className="object-cover group-hover:opacity-75 transition-opacity duration-300"
-              />
-              <figcaption className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-white p-4">
-                <h3 className="text-lg font-bold">{artist.title}</h3>
-                <p className="text-sm">{artist.title}</p>
-                <p className="text-xs mt-2">{artist.artist}</p>
-                Link:{" "}
-                <a
-                  href={artist.rijksUrl}
-                  className="text-xs hover:text-md cursor-pointer "
-                  target="_blank"
-                >
-                  {artist.rijksUrl}
-                </a>
-              </figcaption>
-            </motion.figure>
-          ))}
-        </motion.div>
+        <Suspense fallback={<p>Loading your favorites</p>}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.5 }}
+            className="grid grid-cols-1 grid-rows-3 lg:grid-cols-2 w-full h-full overflow-y-auto p-6 gap-6"
+          >
+            {artWorks.map((artist: any) => (
+              <motion.figure
+                key={artist.id}
+                className="relative group overflow-hidden flex items-center bg-slate-200  rounded shadow-md"
+              >
+                <img
+                  src={artist.imageUrl}
+                  alt={artist.title}
+                  className="object-cover group-hover:opacity-75 transition-opacity duration-300"
+                />
+                <figcaption className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-white p-4">
+                  <div className="flex justify-end w-full">
+                    <DropdownMenu
+                      open={openMenuId === artist.id}
+                      onOpenChange={() => handleMenuToggle(artist.id)}
+                    >
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <MoreHorizontal />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="w-[200px] rounded bg-black bg-opacity-80 border-none text-white"
+                      >
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-red-600 font-bold"
+                          onClick={() => {
+                            handleDelete(artist.id);
+                          }}
+                        >
+                          <Trash className="mr-2 h-4 w-4" />
+                          Delete
+                          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  <h3 className="text-lg font-bold">{artist.title}</h3>
+                  <p className="text-sm">{artist.title}</p>
+                  <p className="text-xs mt-2">{artist.artist}</p>
+                  Link:{" "}
+                  <a
+                    href={artist.rijksUrl}
+                    className="text-xs hover:text-md cursor-pointer "
+                    target="_blank"
+                  >
+                    {artist.rijksUrl}
+                  </a>
+                </figcaption>
+              </motion.figure>
+            ))}
+          </motion.div>
+        </Suspense>
+      )}
+      {artWorks?.length === 0 && (
+        <div className="w-full h-full flex items-center justify-center">
+          <h1 className="text-2xl font-bold italic">
+            You have not added any favorites yet
+          </h1>
+        </div>
+      )}
+      {artWorks === null && (
+        <div className="w-full h-full flex items-center justify-center">
+          <h1 className="text-2xl font-bold italic ">
+            Loading your favorites ...
+          </h1>
+        </div>
       )}
     </div>
   );

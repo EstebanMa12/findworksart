@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/card";
 
 import ArtWorksComponent from "@/components/artWorks";
-
 import { Button } from "@/components/ui/button";
+import { Suspense } from 'react'
 
 interface Artist {
   id: string;
@@ -77,51 +77,55 @@ const AsyncComponent: React.FC<AsyncComponentProps> = ({ dataArtist }) => {
 
   return (
     <section className="flex flex-col w-full py-2  gap-y-4 justify-center h-[calc(100vh-5rem)] items-center">
-      <Card className="rounded w-2/3 sm:w-1/2 shadow-lg">
+      <Suspense fallback={<p>Loading Card ...</p>}>
+        <Card className="rounded w-2/3 sm:w-1/2 shadow-lg">
+          <AnimatePresence>
+            {artists.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <CardHeader>
+                  <CardTitle className="text-center">Search Page</CardTitle>
+                </CardHeader>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <CardContent>
+            <form
+              className="flex flex-row justify-between items-center mt-4"
+              onSubmit={handleSubmit}
+            >
+              <input
+                type="text"
+                placeholder="Search by title"
+                className="border p-2"
+              />
+              <AsyncSelect
+                cacheOptions
+                defaultOptions
+                loadOptions={promiseOptions}
+                onChange={(selectedOption) => {
+                  setSelectedOption(selectedOption);
+                }}
+              />
+              <Button
+                variant="secondary"
+                className=" py-3 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                type="submit"
+              >
+                Search
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </Suspense>
+      <Suspense fallback={<p>Loading Artworks</p>}>
         <AnimatePresence>
-          {artists.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <CardHeader>
-                <CardTitle className="text-center">Search Page</CardTitle>
-              </CardHeader>
-            </motion.div>
-          )}
+          {artists.length > 0 && <ArtWorksComponent artists={artists} />}
         </AnimatePresence>
-        <CardContent>
-          <form
-            className="flex flex-row justify-between items-center mt-4"
-            onSubmit={handleSubmit}
-          >
-            <input
-              type="text"
-              placeholder="Search by title"
-              className="border p-2"
-            />
-            <AsyncSelect
-              cacheOptions
-              defaultOptions
-              loadOptions={promiseOptions}
-              onChange={(selectedOption) => {
-                setSelectedOption(selectedOption);
-              }}
-            />
-            <Button
-              variant="secondary"
-              className=" py-3 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              type="submit"
-            >
-              Search
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-      <AnimatePresence>
-        {artists.length > 0 && <ArtWorksComponent artists={artists} />}
-      </AnimatePresence>
+      </Suspense>
     </section>
   );
 };
